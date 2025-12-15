@@ -12,7 +12,7 @@ conn = sqlite3.connect("database.sqlite")
 
 player_attr = pd.read_sql("""
 SELECT *
-FROM Player_Attributes
+FROM player_attributes_dataset
 """, conn)
 
 player = pd.read_sql("""
