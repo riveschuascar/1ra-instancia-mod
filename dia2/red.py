@@ -1,3 +1,5 @@
+import numpy as np
+
 class DenseLayer:
     '''Capa densa con regularización L2.'''
     def __init__(self, input_dim, output_dim, l2_lambda=0.0):
