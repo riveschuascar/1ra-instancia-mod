@@ -15,8 +15,8 @@ import pandas as pd
 # ============================
 # IMPORTS PARA EFECTOS EXTERNOS (DÍA 3)
 # ============================
-from .lesiones import efecto_lesion
-from .competiciones import efecto_fatiga
+from lesiones import efecto_lesion
+from competiciones import efecto_fatiga
 
 
 
