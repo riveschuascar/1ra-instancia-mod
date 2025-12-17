@@ -6,3 +6,4 @@ sklearn.model_selection
 sklearn.metrics 
 seaborn
 matplot
+streamlit

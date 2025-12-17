@@ -239,6 +239,15 @@ class PlayerDevelopmentModel:
         weighted_sum = p.w_F * F + p.w_T * T + p.w_M * M
         return 40 + 60 * weighted_sum
     
+    def get_params_by_position(position: str):
+    # Pesos wF, wT, wM según posición
+        if position == "Forward":
+            return PlayerParameters(w_F=0.4, w_T=0.4, w_M=0.2, A_opt=26.0)
+        elif position == "Midfielder":
+            return PlayerParameters(w_F=0.3, w_T=0.5, w_M=0.2, A_opt=28.0)
+        elif position == "Defender":
+            return PlayerParameters(w_F=0.4, w_T=0.2, w_M=0.4, A_opt=29.0)
+    
     def simulate(self, 
                  initial_state: dict,
                  training_schedule: Callable[[float], Tuple[float, float, float]],
