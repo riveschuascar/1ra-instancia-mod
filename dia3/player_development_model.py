@@ -12,6 +12,13 @@ from dataclasses import dataclass
 from typing import Tuple, List, Callable
 import pandas as pd
 
+# ============================
+# IMPORTS PARA EFECTOS EXTERNOS (DÍA 3)
+# ============================
+from .lesiones import efecto_lesion
+from .competiciones import efecto_fatiga
+
+
 
 @dataclass
 class PlayerParameters:
@@ -47,6 +54,17 @@ class PlayerParameters:
     age_threshold_T: float = 32.0
     age_threshold_M: float = 35.0
 
+    # ============================
+    # PARÁMETROS NUEVOS (LESIONES + COMPETICIONES)
+    # ============================
+    # Lesión definida por "día de simulación" (0 = inicio de simulación)
+    injury_start_day: float = 365 * 1      # día de simulación en que ocurre la lesión
+    injury_duration: float = 120           # duración en días
+    injury_severity: float = 0.5           # [0,1] reducción temporal
+
+    # Competiciones (fatiga acumulada)
+    matches_per_week: int = 2              # partidos por semana
+
 
 class PlayerDevelopmentModel:
     """Modelo de desarrollo de jugador con integración RK4"""
@@ -59,6 +77,8 @@ class PlayerDevelopmentModel:
             params: Parámetros del modelo. Si es None, usa valores por defecto
         """
         self.params = params if params is not None else PlayerParameters()
+        # Se setea en simulate() para convertir edad->día de simulación sin cambiar firmas
+        self._sim_start_age_days = None
     
     def age_factor(self, A: float) -> float:
         """
@@ -181,10 +201,31 @@ class PlayerDevelopmentModel:
         """
         F, T, M, R, A = state
         E_F, E_T, E_M = training
-        
-        dF = self.dF_dt(F, T, M, A, E_F)
-        dT = self.dT_dt(F, T, M, A, E_T)
-        dM = self.dM_dt(F, T, M, A, E_M)
+
+        # ============================
+        # EFECTOS EXTERNOS: LESIONES + COMPETICIONES
+        # ============================
+        # Convertir edad (años) a día absoluto y luego a "día de simulación"
+        current_age_days = A * 365.0
+        if self._sim_start_age_days is None:
+            sim_day = 0.0
+        else:
+            sim_day = current_age_days - self._sim_start_age_days
+
+        lesion = efecto_lesion(
+            sim_day,
+            self.params.injury_start_day,
+            self.params.injury_duration,
+            self.params.injury_severity
+        )
+        fatiga = efecto_fatiga(self.params.matches_per_week)
+        factor_total = lesion * fatiga
+
+        # Derivadas base * factor_total (reducción temporal + fatiga)
+        dF = factor_total * self.dF_dt(F, T, M, A, E_F)
+        dT = factor_total * self.dT_dt(F, T, M, A, E_T)
+        dM = factor_total * self.dM_dt(F, T, M, A, E_M)
+
         dR = self.dR_dt(dF, dT, dM)
         dA = self.dA_dt()
         
@@ -271,6 +312,9 @@ class PlayerDevelopmentModel:
         M0 = initial_state['M']
         A0 = initial_state['A']
         R0 = self.compute_rating(F0, T0, M0)
+
+        # Guardar día 0 de la simulación (para efectos externos por día de simulación)
+        self._sim_start_age_days = A0 * 365.0
         
         state = np.array([F0, T0, M0, R0, A0])
         
