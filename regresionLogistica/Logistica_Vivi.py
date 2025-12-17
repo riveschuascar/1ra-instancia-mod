@@ -121,10 +121,8 @@ X_train_bal, y_train_bal = undersample_train(X_train, y_train)
 
 # --- 5. Implementación y Entrenamiento (Ajuste de Hiperparámetros) ---
 
-
-
 ALPHA = 0.001       # Tasa de aprendizaje
-LAMBDA = 0.0001      # Parámetro de regularización L2 para evitar overfitting 
+LAMBDA = 0.0001     # Parámetro de regularización L2 para evitar overfitting 
 ITERACIONES = 1000  # Número máximo de iteraciones para DG
 
 K_CLASSES = 4 

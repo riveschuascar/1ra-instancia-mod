@@ -1,0 +1,38 @@
+{
+  "task": "regression",
+  "learning_rate": 0.001,
+  "layers": [
+    {
+      "type": "Dense",
+      "input_dim": 15,
+      "output_dim": 256,
+      "l2_lambda": 0.01,
+      "dropout_rate": 0.2,
+      "activation": "ReLU"
+    },
+    {
+      "type": "Dense",
+      "input_dim": 256,
+      "output_dim": 128,
+      "l2_lambda": 0.01,
+      "dropout_rate": 0.2,
+      "activation": "ReLU"
+    },
+    {
+      "type": "Dense",
+      "input_dim": 128,
+      "output_dim": 64,
+      "l2_lambda": 0.01,
+      "dropout_rate": 0.2,
+      "activation": "ReLU"
+    },
+    {
+      "type": "Dense",
+      "input_dim": 64,
+      "output_dim": 1,
+      "l2_lambda": 0.0,
+      "dropout_rate": 0.0,
+      "activation": "Linear"
+    }
+  ]
+}
