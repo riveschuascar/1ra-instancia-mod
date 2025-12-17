@@ -1,9 +1,7 @@
 pandas
 numpy
 scikit-learn
-sqlite3
-sklearn.model_selection 
-sklearn.metrics 
 seaborn
-matplot
+matplotlib
 streamlit
+plotly

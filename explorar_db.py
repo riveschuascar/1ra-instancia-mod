@@ -19,7 +19,7 @@ def print_tables_contents(tables, db_path):
     # Load all tables into pandas DataFrames and print their contents
     for table_name in tables:
         table_name = table_name[0]
-        df = pd.read_sql_query(f'SELECT * FROM {table_name} LIMIT 1;', conn)
+        df = pd.read_sql_query(f'SELECT * FROM {table_name} LIMIT 0;', conn)
         print(f"Table: {table_name}")
         print(df)
         print("\n")
@@ -31,6 +31,6 @@ if __name__ == "__main__":
     tables = get_tables_names(db_path)
     print_tables_contents(tables, db_path)
 
-    db_path_clean = 'cleandataset.sqlite'
-    tables_clean = get_tables_names(db_path_clean)
-    print_tables_contents(tables_clean, db_path_clean)
+    # db_path_clean = 'cleandataset.sqlite'
+    # tables_clean = get_tables_names(db_path_clean)
+    # print_tables_contents(tables_clean, db_path_clean)
